@@ -1,0 +1,57 @@
+{
+  "id": "./",
+  "name": "NeonMosaik — Zufällige Unsplash-Galerie",
+  "short_name": "NeonMosaik",
+  "description": "Ein lebendiges Mosaik aus zufälligen Unsplash-Fotos im Neon-Look. Installierbar als Progressive Web App und nach dem ersten Besuch vollständig offline nutzbar.",
+  "lang": "de",
+  "dir": "ltr",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#05060a",
+  "theme_color": "#05060a",
+  "categories": ["photo", "entertainment", "lifestyle"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mosaik neu mischen",
+      "short_name": "Mischen",
+      "url": "./?action=shuffle",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Optionen öffnen",
+      "short_name": "Optionen",
+      "url": "./?action=settings",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

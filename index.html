@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>NeonMosaik — Zufällige Unsplash-Galerie</title>
+  <meta name="description" content="NeonMosaik zeigt ein lebendiges Mosaik aus zufälligen Unsplash-Fotos. Installierbare Progressive Web App — läuft nach dem ersten Besuch komplett offline." />
+  <meta name="theme-color" content="#05060a" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="author" content="NeonMosaik" />
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="./manifest.webmanifest" />
+
+  <!-- iOS / Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NeonMosaik" />
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+
+  <!-- Icons -->
+  <link rel="icon" href="./icons/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png" />
+
+  <!-- Bilder liegen auf dem Unsplash-CDN -->
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <!-- Dekorativer Hintergrund (Neon-Glow) -->
+  <div class="aurora" aria-hidden="true">
+    <span class="aurora__orb aurora__orb--cyan"></span>
+    <span class="aurora__orb aurora__orb--magenta"></span>
+    <span class="aurora__orb aurora__orb--violet"></span>
+    <span class="aurora__grid"></span>
+  </div>
+
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <!-- ================= HEADER ================= -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">
+        <span class="brand__title">NEON<em>MOSAIK</em></span>
+        <span class="brand__sub">Zufällige Unsplash-Momente — live &amp; offline</span>
+      </span>
+    </div>
+
+    <nav class="controls" aria-label="Galerie-Steuerung">
+      <span class="status" id="netStatus" data-state="unknown" title="Verbindungsstatus">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span class="status__label" id="netLabel">prüfe …</span>
+      </span>
+
+      <button class="btn btn--icon" id="btnInstall" type="button" hidden>
+        <span aria-hidden="true">⤓</span><span class="btn__text">Installieren</span>
+      </button>
+
+      <button class="btn btn--icon" id="btnShuffle" type="button" title="Alle Kacheln neu mischen">
+        <span aria-hidden="true">⤨</span><span class="btn__text">Mischen</span>
+      </button>
+
+      <button class="btn btn--icon" id="btnPlay" type="button" aria-pressed="true" title="Animation pausieren">
+        <span aria-hidden="true" id="btnPlayIcon">❚❚</span><span class="btn__text" id="btnPlayText">Pause</span>
+      </button>
+
+      <button class="btn btn--icon" id="btnSettings" type="button" aria-haspopup="dialog" title="Einstellungen">
+        <span aria-hidden="true">⚙</span><span class="btn__text">Optionen</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ================= MOSAIK ================= -->
+  <main id="main">
+    <section class="stage" aria-label="Mosaik-Galerie mit zufälligen Fotos">
+      <div class="mosaic" id="mosaic"></div>
+
+      <div class="stage__hint" id="stageHint" hidden>
+        <p><strong>Offline-Modus</strong> — dieses Mosaik kommt aus dem lokalen Cache.</p>
+      </div>
+
+      <div class="skeleton" id="skeleton" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <details class="legal" id="legal">
+      <summary class="legal__bar">
+        <span class="legal__pulse" aria-hidden="true"></span>
+        <span class="legal__teaser">
+          <span class="legal__teaser--long">Pseudo-Impressum · Daten bleiben lokal · Fotos von Unsplash</span>
+          <span class="legal__teaser--short">Impressum · Lokal · Unsplash</span>
+        </span>
+        <span class="legal__more">Details</span>
+      </summary>
+
+      <div class="legal__panel">
+        <article class="legal__col">
+          <h2>Pseudo-Impressum</h2>
+          <p>
+            <strong>NeonMosaik</strong> ist ein nicht-kommerzielles Demo- und Showcase-Projekt.
+            Die folgenden Angaben sind <em>Platzhalter</em> und kein Impressum im Rechtssinne.
+          </p>
+          <p>
+            Max Mustermann (Platzhalter)<br />
+            Musterstraße 1<br />
+            12345 Musterstadt<br />
+            E-Mail: <a href="mailto:hallo@example.com">hallo@example.com</a>
+          </p>
+          <p class="legal__fine">Angaben ohne Gewähr. Kein Verkauf, keine Werbung, keine Auftragsverarbeitung.</p>
+        </article>
+
+        <article class="legal__col">
+          <h2>Daten bleiben lokal</h2>
+          <p>
+            Diese App hat <strong>keinen eigenen Server</strong>. Es gibt kein Tracking, keine Analyse-Tools,
+            keine Marketing-Cookies und keine Weitergabe von Daten an Dritte.
+          </p>
+          <p>
+            Gespeichert werden ausschließlich lokal in deinem Browser
+            (<code>localStorage</code> + <code>Cache Storage</code>): deine Einstellungen
+            (Geschwindigkeit, Pause-Zustand, optionaler Unsplash-Zugangsschlüssel) sowie die geladenen Bilder,
+            damit alles offline verfügbar bleibt.
+          </p>
+          <p class="legal__fine">
+            Einzige externe Verbindung: das Laden der Fotos vom Unsplash-CDN
+            (<code>images.unsplash.com</code>). Du kannst alles löschen, indem du die Website-Daten
+            im Browser entfernst.
+          </p>
+        </article>
+
+        <article class="legal__col">
+          <h2>Quellen &amp; Lizenz</h2>
+          <p>
+            Alle Fotos stammen von <a href="https://unsplash.com/?utm_source=neonmosaik&amp;utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>
+            und werden gemäß den Unsplash-Richtlinien direkt vom CDN eingebunden.
+            Nutzung unter der
+            <a href="https://unsplash.com/license?utm_source=neonmosaik&amp;utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash-Lizenz</a>.
+          </p>
+          <p>
+            Die Namen der Fotograf:innen findest du auf der jeweiligen Fotoseite bei Unsplash.
+            Trägst du in den Optionen einen Unsplash-Zugangsschlüssel ein, zeigt jede Kachel
+            zusätzlich die konkrete Urheberin bzw. den konkreten Urheber mit Profil-Link an.
+          </p>
+          <p class="legal__fine">
+            Wir sind nicht mit Unsplash verbunden und werden von Unsplash nicht gesponsert.
+          </p>
+        </article>
+      </div>
+    </details>
+
+    <p class="colophon">
+      <span>© <span id="year">2026</span> NeonMosaik</span>
+      <span aria-hidden="true">·</span>
+      <span>v1.0.0</span>
+      <span aria-hidden="true">·</span>
+      <span>Progressive Web App</span>
+      <span aria-hidden="true">·</span>
+      <span id="cacheInfo">Offline-Cache: –</span>
+    </p>
+  </footer>
+
+  <!-- ================= EINSTELLUNGEN ================= -->
+  <dialog class="sheet" id="settingsDialog" aria-labelledby="settingsTitle">
+    <form method="dialog" class="sheet__inner">
+      <header class="sheet__head">
+        <h2 id="settingsTitle">Optionen</h2>
+        <button class="btn btn--ghost" value="close" aria-label="Schließen">✕</button>
+      </header>
+
+      <div class="sheet__body">
+        <fieldset class="field">
+          <legend>Aktionen</legend>
+          <div class="field__row">
+            <button class="btn" id="btnShuffleSheet" type="button">Mosaik neu mischen</button>
+            <button class="btn" id="btnInstallSheet" type="button" hidden>App installieren</button>
+          </div>
+          <p class="help">
+            „Installieren“ legt NeonMosaik als eigenständige App auf den Startbildschirm —
+            danach startet sie ohne Browserleiste und funktioniert vollständig offline.
+          </p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Wechsel-Tempo</legend>
+          <input type="range" id="speedRange" min="0" max="4" step="1" value="2"
+                 aria-describedby="speedHelp" />
+          <div class="range-scale" aria-hidden="true">
+            <span>ruhig</span><span>normal</span><span>hektisch</span>
+          </div>
+          <p class="help" id="speedHelp">
+            Wie oft einzelne Mosaiksteine durch neue Fotos ersetzt werden.
+          </p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Animation</legend>
+          <label class="switch">
+            <input type="checkbox" id="optMotion" checked />
+            <span>Sanfter Zoom auf den Fotos</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="optCredits" />
+            <span>Urheber-Labels dauerhaft anzeigen</span>
+          </label>
+          <label class="switch">
+            <input type="checkbox" id="optWarm" checked />
+            <span>Alle Fotos für Offline-Nutzung vorladen</span>
+          </label>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Unsplash-Zugangsschlüssel (optional)</legend>
+          <input type="password" id="optKey" class="text-input" autocomplete="off" spellcheck="false"
+                 placeholder="Access Key, z. B. AbC123…" />
+          <p class="help">
+            Ohne Schlüssel nutzt die App einen kuratieren Bilderpool. Mit Schlüssel werden bei jedem
+            Start echte Zufallsfotos über die offizielle Unsplash-API geladen — inklusive
+            Urheber-Namen und Profil-Links. Der Schlüssel bleibt ausschließlich auf diesem Gerät.
+          </p>
+          <div class="field__row">
+            <button class="btn" id="btnSaveKey" type="button">Schlüssel speichern</button>
+            <button class="btn btn--ghost" id="btnClearKey" type="button">Schlüssel löschen</button>
+          </div>
+          <p class="help" id="keyState" role="status"></p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Offline &amp; Speicher</legend>
+          <p class="help" id="storageState">–</p>
+          <div class="field__row">
+            <button class="btn" id="btnPrecache" type="button">Jetzt offline-fähig machen</button>
+            <button class="btn btn--ghost" id="btnResetCache" type="button">Cache leeren</button>
+          </div>
+        </fieldset>
+      </div>
+
+      <footer class="sheet__foot">
+        <button class="btn btn--primary" value="close">Fertig</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div class="noscript">
+      <p><strong>JavaScript ist deaktiviert.</strong> NeonMosaik braucht JavaScript, um das Mosaik aufzubauen.</p>
+    </div>
+  </noscript>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
